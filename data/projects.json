@@ -1,0 +1,14 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "مشروع تجريبي",
+      "description": "هذا وصف للمشروع التجريبي",
+      "image": "https://via.placeholder.com/600x400",
+      "tags": ["Laravel", "Vue.js", "Tailwind"],
+      "github": "#",
+      "demo": "#",
+      "date": "2023-10-01"
+    }
+  ]
+}
