@@ -101,14 +101,24 @@
           <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">مطور ويب كامل</span>
         </h1>
         <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
-          أطور حلول ويب عصرية وآمنة باستخدام أحدث التقنيات مثل Laravel و JavaScript. أساعد الشركات في تحويل أفكارهم إلى واقع رقمي متميز.
+          أطور حلول ويب عصرية وآمنة باستخدام أحدث التقنيات مثل Laravel و . أساعد الشركات في تحويل أفكارهم إلى واقع رقمي متميز.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          <a href="#contact" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
-            تواصل معي
+          <a href="https://wa.me/249993147029?text=مرحباً%20خالد،%20أرغب%20في%20الاستفسار%20عن%20خدماتك%20التطويرية"
+             target="_blank"
+             rel="noopener noreferrer nofollow"
+             class="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 duration-200 flex items-center justify-center gap-2 cursor-pointer group">
+            <i class="fab fa-whatsapp text-xl"></i>
+            <span>تواصل معي على واتساب</span>
+            <i class="fas fa-arrow-left text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-1 group-hover:translate-x-0"></i>
           </a>
-          <a href="#projects" class="px-8 py-3 border border-gray-300 dark:border-gray-600 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            تصفح أعمالي
+          <a href="#projects" 
+             onclick="event.preventDefault(); 
+                     document.querySelector('#projects').scrollIntoView({behavior: 'smooth'});"
+             class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300 flex items-center justify-center gap-2 group">
+            <i class="fas fa-laptop-code"></i>
+            <span>تصفح أعمالي</span>
+            <i class="fas fa-arrow-down text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
           </a>
         </div>
         
