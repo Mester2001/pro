@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المشاريع - معرض أعمالي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Custom styles */
+    .admin-mode .editable {
+      position: relative;
+    }
+    .admin-mode .editable:hover {
+      outline: 2px dashed #3b82f6;
+      outline-offset: 2px;
+    }
+    .admin-tools {
+      display: none;
+    }
+    .admin-mode .admin-tools {
+      display: flex;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white dark:bg-gray-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center
+        ">
+          <a href="index.html" class="text-xl font-bold text-blue-600 dark:text-blue-400">
+            معرض الأعمال
+          </a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="relative" id="admin-indicator">
+            <button id="toggle-admin" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              تفعيل وضع المدير
+            </button>
+          </div>
+          <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
+            العودة للرئيسية
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Projects Section -->
+  <section class="py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
+          <span class="block">معرض أعمالي</span>
+          <span class="block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">إدارة المشاريع</span>
+        </h1>
+        <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          قم بإدارة مشاريعك وإضافتها وتعديلها وحذفها بسهولة
+        </p>
+      </div>
+
+      <!-- Add Project Button -->
+      <div class="text-center mb-8">
+        <button id="add-project-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center mx-auto">
+          <i class="fas fa-plus ml-2"></i>
+          إضافة مشروع جديد
+        </button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div id="projects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Projects will be loaded here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Form Modal -->
+  <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">إضافة مشروع جديد</h3>
+          <button id="close-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        
+        <form id="project-form" class="space-y-4">
+          <input type="hidden" id="project-id">
+          
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              عنوان المشروع
+            </label>
+            <input type="text" id="title" required 
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+          </div>
+          
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              الوصف
+            </label>
+            <textarea id="description" rows="3" required
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"></textarea>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                رابط الصورة
+              </label>
+              <input type="url" id="image" required
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+            </div>
+            
+            <div>
+              <label for="tags" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                الوسوم (مفصولة بفواصل)
+              </label>
+              <input type="text" id="tags"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="Laravel, Vue.js, Tailwind">
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="github" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                رابط GitHub (اختياري)
+              </label>
+              <input type="url" id="github"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+            </div>
+            
+            <div>
+              <label for="demo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                رابط المعاينة (اختياري)
+              </label>
+              <input type="url" id="demo"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+            </div>
+          </div>
+          
+          <div class="pt-4 flex justify-end space-x-3">
+            <button type="button" id="cancel-form" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              إلغاء
+            </button>
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              حفظ التغييرات
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    class ProjectManager {
+      constructor() {
+        this.projects = [];
+        this.isAdmin = false;
+        this.currentEditingId = null;
+        
+        // DOM Elements
+        this.projectsContainer = document.getElementById('projects-container');
+        this.projectForm = document.getElementById('project-form');
+        this.projectModal = document.getElementById('project-modal');
+        this.modalTitle = document.getElementById('modal-title');
+        this.toggleAdminBtn = document.getElementById('toggle-admin');
+        
+        // Initialize
+        this.init();
+      }
+      
+      async init() {
+        // Load projects
+        await this.loadProjects();
+        this.renderProjects();
+        
+        // Event Listeners
+        document.getElementById('add-project-btn')?.addEventListener('click', () => this.showProjectForm());
+        document.getElementById('close-modal')?.addEventListener('click', () => this.closeModal());
+        document.getElementById('cancel-form')?.addEventListener('click', () => this.closeModal());
+        this.projectForm?.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        this.toggleAdminBtn?.addEventListener('click', () => this.toggleAdminMode());
+        
+        // Check for admin mode in URL
+        this.checkAdminMode();
+      }
+      
+      async loadProjects() {
+        try {
+          // Try to load from localStorage first
+          const savedProjects = localStorage.getItem('portfolio_projects');
+          if (savedProjects) {
+            this.projects = JSON.parse(savedProjects);
+          } else {
+            // Fallback to the static JSON file
+            const response = await fetch('data/projects.json');
+            const data = await response.json();
+            this.projects = data.projects || [];
+            // Save to localStorage for future use
+            await this.saveProjectsToStorage();
+          }
+        } catch (error) {
+          console.error('Error loading projects:', error);
+          this.projects = [];
+        }
+      }
+      
+      async saveProjectsToStorage() {
+        try {
+          localStorage.setItem('portfolio_projects', JSON.stringify(this.projects));
+          console.log('Projects saved to local storage');
+          return true;
+        } catch (error) {
+          console.error('Error saving projects to local storage:', error);
+          return false;
+        }
+      }
+      
+      // This function would be used in a real app with a backend
+      async saveProjectsToServer() {
+        try {
+          // In a real app, you would send the projects to your server here
+          // For example:
+          // const response = await fetch('/api/projects', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify({ projects: this.projects })
+          // });
+          // const data = await response.json();
+          // return data.success;
+          
+          console.log('Projects would be saved to server in a real app');
+          return true;
+        } catch (error) {
+          console.error('Error saving projects to server:', error);
+          return false;
+        }
+      }
+      
+      renderProjects() {
+        if (!this.projectsContainer) return;
+        
+        if (this.projects.length === 0) {
+          this.projectsContainer.innerHTML = `
+            <div class="col-span-full text-center py-20">
+              <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-folder-open text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">لا توجد مشاريع</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">لم يتم إضافة أي مشاريع بعد. ابدأ بإضافة مشروعك الأول الآن.</p>
+                <button id="add-first-project" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center mx-auto">
+                  <i class="fas fa-plus ml-2"></i>
+                  إضافة مشروع جديد
+                </button>
+              </div>
+            </div>
+          `;
+          
+          // Add event listener for the first project button
+          document.getElementById('add-first-project')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showProjectForm();
+          });
+          return;
+        }
+        
+        this.projectsContainer.innerHTML = this.projects.map(project => `
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl relative group">
+            <div class="relative h-48 overflow-hidden">
+              <img src="${project.image || 'https://via.placeholder.com/600x400'}" 
+                   alt="${project.title}" 
+                   class="w-full h-full object-cover">
+              
+              <!-- Admin Controls -->
+              <div class="admin-tools absolute top-2 right-2 flex space-x-2 rtl:space-x-reverse">
+                <button class="edit-project p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors" 
+                        data-id="${project.id}"
+                        title="تعديل">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-project p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                        data-id="${project.id}"
+                        title="حذف">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+              
+              <!-- Project Links -->
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-4">
+                ${project.github ? `
+                  <a href="${project.github}" target="_blank" 
+                     class="p-3 bg-white/90 text-gray-900 rounded-full hover:bg-white transition-colors"
+                     title="عرض الكود المصدري">
+                    <i class="fab fa-github text-xl"></i>
+                  </a>
+                ` : ''}
+                ${project.demo ? `
+                  <a href="${project.demo}" target="_blank" 
+                     class="p-3 bg-white/90 text-gray-900 rounded-full hover:bg-white transition-colors"
+                     title="معاينة المشروع">
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">${project.title}</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">${project.description}</p>
+              
+              <div class="flex flex-wrap gap-2">
+                ${project.tags?.map(tag => `
+                  <span class="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full">
+                    ${tag}
+                  </span>
+                `).join('')}
+              </div>
+              
+              <div class="mt-4 text-sm text-gray-500">
+                ${new Date(project.date).toLocaleDateString('ar-EG')}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        // Add event listeners for edit and delete buttons
+        document.querySelectorAll('.edit-project').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const projectId = parseInt(btn.dataset.id);
+            this.editProject(projectId);
+          });
+        });
+        
+        document.querySelectorAll('.delete-project').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const projectId = parseInt(btn.dataset.id);
+            this.deleteProject(projectId);
+          });
+        });
+      }
+      
+      showProjectForm(project = null) {
+        if (project) {
+          // Edit mode
+          this.currentEditingId = project.id;
+          this.modalTitle.textContent = 'تعديل المشروع';
+          
+          // Fill the form with project data
+          document.getElementById('project-id').value = project.id;
+          document.getElementById('title').value = project.title || '';
+          document.getElementById('description').value = project.description || '';
+          document.getElementById('image').value = project.image || '';
+          document.getElementById('tags').value = project.tags?.join(', ') || '';
+          document.getElementById('github').value = project.github || '';
+          document.getElementById('demo').value = project.demo || '';
+        } else {
+          // Add new project mode
+          this.currentEditingId = null;
+          this.modalTitle.textContent = 'إضافة مشروع جديد';
+          this.projectForm.reset();
+        }
+        
+        // Show the modal
+        this.projectModal.classList.remove('hidden');
+      }
+      
+      closeModal() {
+        this.projectModal.classList.add('hidden');
+        this.projectForm.reset();
+        this.currentEditingId = null;
+      }
+      
+      async handleFormSubmit(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        const submitBtn = this.projectForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>جاري الحفظ...';
+        
+        try {
+          const projectData = {
+            id: this.currentEditingId || Date.now(),
+            title: document.getElementById('title').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            image: document.getElementById('image').value.trim(),
+            tags: document.getElementById('tags').value
+              .split(',')
+              .map(tag => tag.trim())
+              .filter(Boolean),
+            github: document.getElementById('github').value.trim() || null,
+            demo: document.getElementById('demo').value.trim() || null,
+            date: this.currentEditingId 
+              ? this.projects.find(p => p.id === this.currentEditingId)?.date || new Date().toISOString()
+              : new Date().toISOString()
+          };
+          
+          // Validate required fields
+          if (!projectData.title || !projectData.description || !projectData.image) {
+            throw new Error('الرجاء ملء جميع الحقول المطلوبة');
+          }
+          
+          // Validate URL format for image, github, and demo
+          const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+          if (!urlPattern.test(projectData.image)) {
+            throw new Error('الرجاء إدخال رابط صحيح للصورة');
+          }
+          
+          if (projectData.github && !urlPattern.test(projectData.github)) {
+            throw new Error('الرجاء إدخال رابط GitHub صحيح');
+          }
+          
+          if (projectData.demo && !urlPattern.test(projectData.demo)) {
+            throw new Error('الرجاء إدخال رابط معاينة صحيح');
+          }
+          
+          if (this.currentEditingId) {
+            // Update existing project
+            const index = this.projects.findIndex(p => p.id === this.currentEditingId);
+            if (index !== -1) {
+              this.projects[index] = projectData;
+              this.showNotification('تم تحديث المشروع بنجاح', 'success');
+            }
+          } else {
+            // Add new project
+            this.projects.unshift(projectData);
+            this.showNotification('تمت إضافة المشروع بنجاح', 'success');
+          }
+          
+          // Save to localStorage and update UI
+          await this.saveProjectsToStorage();
+          this.renderProjects();
+          this.closeModal();
+          
+        } catch (error) {
+          console.error('Error saving project:', error);
+          this.showNotification(error.message || 'حدث خطأ أثناء حفظ المشروع', 'error');
+        } finally {
+          // Reset button state
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+      
+      editProject(id) {
+        const project = this.projects.find(p => p.id === id);
+        if (project) {
+          this.showProjectForm(project);
+        }
+      }
+      
+      async deleteProject(id) {
+        if (!confirm('هل أنت متأكد من حذف هذا المشروع؟ لا يمكن التراجع عن هذا الإجراء.')) {
+          return;
+        }
+        
+        this.projects = this.projects.filter(project => project.id !== id);
+        await this.saveProjects();
+        this.renderProjects();
+        
+        // Show success message
+        this.showNotification('تم حذف المشروع بنجاح', 'success');
+      }
+      
+      toggleAdminMode() {
+        this.isAdmin = !this.isAdmin;
+        document.body.classList.toggle('admin-mode', this.isAdmin);
+        this.toggleAdminBtn.textContent = this.isAdmin ? 'تعطيل وضع المدير' : 'تفعيل وضع المدير';
+        this.toggleAdminBtn.classList.toggle('bg-green-600', this.isAdmin);
+        this.toggleAdminBtn.classList.toggle('hover:bg-green-700', this.isAdmin);
+        this.toggleAdminBtn.classList.toggle('bg-blue-600', !this.isAdmin);
+        this.toggleAdminBtn.classList.toggle('hover:bg-blue-700', !this.isAdmin);
+        
+        // Update URL
+        const url = new URL(window.location.href);
+        if (this.isAdmin) {
+          url.searchParams.set('admin', 'true');
+        } else {
+          url.searchParams.delete('admin');
+        }
+        window.history.pushState({}, '', url);
+      }
+      
+      checkAdminMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+          this.isAdmin = true;
+          document.body.classList.add('admin-mode');
+          this.toggleAdminBtn.textContent = 'تعطيل وضع المدير';
+          this.toggleAdminBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+          this.toggleAdminBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        }
+      }
+      
+      showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white ${
+          type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+        }`;
+        notification.textContent = message;
+        
+        // Add to the page
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+          notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
+      }
+    }
+    
+    // Initialize the project manager when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      window.projectManager = new ProjectManager();
+    });
+  </script>
+</body>
+</html>
